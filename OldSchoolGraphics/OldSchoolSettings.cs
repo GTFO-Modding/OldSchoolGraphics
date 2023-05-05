@@ -12,9 +12,8 @@ using Bloom = UnityEngine.Rendering.PostProcessing.Bloom;
 namespace OldSchoolGraphics;
 internal static class OldSchoolSettings
 {
-    public static void Apply(FPSCamera fpsCam)
+    public static void ApplyPPSettings(FPSCamera fpsCam)
     {
-        Shader.SetGlobalFloat("_SampleNoiseAmount", CFG.NoiseScale.Value);
         fpsCam.SetBloomEnabled(true);
 
         var beProfile = fpsCam.postProcessing.m_ppBehavior.profile;

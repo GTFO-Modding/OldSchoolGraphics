@@ -4,6 +4,7 @@ using BepInEx;
 using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using GTFO.API;
+using Il2CppInterop.Runtime.Injection;
 using System;
 using System.IO;
 using System.Linq;
@@ -18,6 +19,8 @@ internal class EntryPoint : BasePlugin
     public override void Load()
     {
         CFG.Initialize(new ConfigFile(Path.Combine(Paths.ConfigPath, "OldSchoolGraphics.cfg"), true));
+
+        ClassInjector.RegisterTypeInIl2Cpp<ScreenGrains>();
 
         _Harmony = new Harmony($"{VersionInfo.RootNamespace}.Harmony");
         _Harmony.PatchAll();

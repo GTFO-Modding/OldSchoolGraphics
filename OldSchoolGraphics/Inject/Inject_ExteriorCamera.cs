@@ -13,13 +13,13 @@ internal class Inject_ExteriorCamera
     [HarmonyPatch(nameof(ExteriorCamera.OnEnable))]
     static void Post_OnEnable(ExteriorCamera __instance)
     {
-        OldSchoolSettings.Apply(__instance.m_fpsCamera);
+        OldSchoolSettings.ApplyPPSettings(__instance.m_fpsCamera);
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(nameof(ExteriorCamera.OnDisable))]
     static void Post_OnDisable(ExteriorCamera __instance)
     {
-        OldSchoolSettings.Apply(__instance.m_fpsCamera);
+        OldSchoolSettings.ApplyPPSettings(__instance.m_fpsCamera);
     }
 }

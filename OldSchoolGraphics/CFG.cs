@@ -49,7 +49,7 @@ internal static class CFG
             var player = PlayerManager.GetLocalPlayerAgent();
             if (player.FPSCamera != null)
             {
-                OldSchoolSettings.Apply(player.FPSCamera);
+                OldSchoolSettings.ApplyPPSettings(player.FPSCamera);
             }
         }
     }

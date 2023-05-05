@@ -13,10 +13,17 @@ namespace OldSchoolGraphics.Inject;
 internal class Inject_FPSCamera
 {
     [HarmonyPostfix]
+    [HarmonyPatch(nameof(FPSCamera.Awake))]
+    static void Post_Awake(FPSCamera __instance)
+    {
+        __instance.m_camera.gameObject.AddComponent<ScreenGrains>().Setup(__instance.m_camera);
+    }
+
+    [HarmonyPostfix]
     [HarmonyPatch(nameof(FPSCamera.RefreshPostEffectsEnabled))]
     static void Post_Refresh(FPSCamera __instance)
     {
-        OldSchoolSettings.Apply(__instance);
+        OldSchoolSettings.ApplyPPSettings(__instance);
         __instance.m_camera.gameObject.AddComponent<Grayscale>();
     }
 }
