@@ -1,5 +1,6 @@
 ﻿using Il2CppInterop.Runtime;
 using OldSchoolGraphics.Comps;
+using OldSchoolGraphics.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

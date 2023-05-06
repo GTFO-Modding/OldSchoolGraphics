@@ -1,4 +1,5 @@
-﻿using Player;
+﻿using OldSchoolGraphics.Controllers;
+using Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ internal class Inject_LocalPlayerAgent_Ambience
         if (__instance.m_ambientLight != null)
         {
             __instance.m_ambientLight.Range *= 1.025f;
-            __instance.m_ambientLight.Intensity *= 2.1f;
+            __instance.m_ambientLight.Intensity *= 1.2f * OldSchoolSettings.EMISSION_MULT;
         }
     }
 }

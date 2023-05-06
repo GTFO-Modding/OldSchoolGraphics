@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OldSchoolGraphics.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,6 @@ internal class Inject_GlowStick
 {
     static void Postfix(GlowstickInstance __instance)
     {
-        __instance.m_LightColorTarget *= 1.4f;
+        __instance.m_LightColorTarget *= OldSchoolSettings.EMISSION_MULT * 1.15f;
     }
 }

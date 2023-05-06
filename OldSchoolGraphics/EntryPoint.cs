@@ -6,6 +6,7 @@ using BepInEx.Unity.IL2CPP;
 using GTFO.API;
 using Il2CppInterop.Runtime.Injection;
 using OldSchoolGraphics.Comps;
+using OldSchoolGraphics.Controllers;
 using System;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,11 @@ internal class EntryPoint : BasePlugin
         Logger.Info($"Plugin has loaded with {_Harmony.GetPatchedMethods().Count()} patches!");
         AssetAPI.OnStartupAssetsLoaded += AssetAPI_OnStartupAssetsLoaded;
         //AssetAPI.OnAssetBundlesLoaded += AssetAPI_OnAssetBundlesLoaded;
+
+        
     }
+
+    
 
     private void AssetAPI_OnAssetBundlesLoaded()
     {
@@ -47,6 +52,7 @@ internal class EntryPoint : BasePlugin
             AssetShardManager.LoadShard(AssetShardManager.GetShardName(AssetBundleName.Gear_Melee_Handle, shard));
             AssetShardManager.LoadShard(AssetShardManager.GetShardName(AssetBundleName.Gear_Melee_Pommel, shard));
         }
+        EmissionUpdater.Initialize();
     }
 
     public override bool Unload()

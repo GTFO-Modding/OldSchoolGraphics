@@ -1,4 +1,5 @@
 ﻿using Enemies;
+using OldSchoolGraphics.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ internal class Inject_ScoutAnt
 {
     static void Postfix(ScoutAntenna __instance)
     {
-        __instance.m_colorDefault *= 2.8f;
-        __instance.m_colorDetection *= 2.8f;
+        __instance.m_colorDefault *= OldSchoolSettings.EMISSION_MULT * 2.14f;
+        __instance.m_colorDetection *= OldSchoolSettings.EMISSION_MULT * 2.14f;
     }
 }

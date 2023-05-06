@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OldSchoolGraphics.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,7 @@ internal class Inject_EnemyGlow
     [HarmonyPriority(Priority.Last)]
     static void Pre_InterpolateGlow1(ref Color col)
     {
-        col *= (4.25f * CFG.EnemyGlowScale.Value);
+        col *= (OldSchoolSettings.EMISSION_MULT * 2.78f * CFG.EnemyGlowScale.Value);
     }
 
     [HarmonyPrefix]
@@ -24,6 +25,6 @@ internal class Inject_EnemyGlow
     [HarmonyPriority(Priority.Last)]
     static void Pre_InterpolateGlow2(ref Color col)
     {
-        col *= (4.25f * CFG.EnemyGlowScale.Value);
+        col *= (OldSchoolSettings.EMISSION_MULT * 2.78f * CFG.EnemyGlowScale.Value);
     }
 }
