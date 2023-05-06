@@ -5,6 +5,7 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using GTFO.API;
 using Il2CppInterop.Runtime.Injection;
+using OldSchoolGraphics.Comps;
 using System;
 using System.IO;
 using System.Linq;
@@ -21,11 +22,20 @@ internal class EntryPoint : BasePlugin
         CFG.Initialize(new ConfigFile(Path.Combine(Paths.ConfigPath, "OldSchoolGraphics.cfg"), true));
 
         ClassInjector.RegisterTypeInIl2Cpp<ScreenGrains>();
+        ClassInjector.RegisterTypeInIl2Cpp<ScreenBlackAndWhite>();
 
         _Harmony = new Harmony($"{VersionInfo.RootNamespace}.Harmony");
         _Harmony.PatchAll();
         Logger.Info($"Plugin has loaded with {_Harmony.GetPatchedMethods().Count()} patches!");
         AssetAPI.OnStartupAssetsLoaded += AssetAPI_OnStartupAssetsLoaded;
+        //AssetAPI.OnAssetBundlesLoaded += AssetAPI_OnAssetBundlesLoaded;
+    }
+
+    private void AssetAPI_OnAssetBundlesLoaded()
+    {
+        //TODO: Add Gray PlayerLobbyBar Charactor
+        
+        //CM_Camera.Current.Camera.gameObject.AddComponent<ScreenBlackAndWhite>();
     }
 
     private void AssetAPI_OnStartupAssetsLoaded()

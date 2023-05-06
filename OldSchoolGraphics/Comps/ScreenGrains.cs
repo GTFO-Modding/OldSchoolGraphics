@@ -18,9 +18,10 @@ internal class ScreenGrains : MonoBehaviour
         _Noise.dx11NoiseShader = Shader.Find("Hidden/NoiseAndGrainDX11");
         _Noise.noiseTexture = GetTexture();
         _Noise.tiling = Vector3.one * 128.0f;
-        _Noise.blackIntensity = 0.21f;
+        _Noise.blackIntensity = 0.20f;
         _Noise.whiteIntensity = 0.21f;
-        _Noise.generalIntensity = 0.21f;
+        _Noise.generalIntensity = 0.22f;
+        _Noise.monochrome = true;
     }
 
     void Update()

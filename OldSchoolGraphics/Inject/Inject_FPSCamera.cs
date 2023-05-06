@@ -1,4 +1,5 @@
 ﻿using Il2CppInterop.Runtime;
+using OldSchoolGraphics.Comps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,5 @@ internal class Inject_FPSCamera
     static void Post_Refresh(FPSCamera __instance)
     {
         OldSchoolSettings.ApplyPPSettings(__instance);
-        __instance.m_camera.gameObject.AddComponent<Grayscale>();
     }
 }
