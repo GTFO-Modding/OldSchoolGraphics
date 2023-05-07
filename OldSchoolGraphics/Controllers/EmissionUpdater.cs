@@ -24,6 +24,12 @@ internal static class EmissionUpdater
         new ESI_CustomGearShader()
     };
 
+    private static readonly Dictionary<string, float> _MaterialIntensityOverrides = new()
+    {
+        { "ApexLights", 0.9f },
+        { "terminal_display_screen", 1.1f }
+    };
+
     public static void Initialize()
     {
         EmissiveShaderInfo.Initialize();
@@ -81,6 +87,10 @@ internal static class EmissionUpdater
         if (Evaluate(material, out var info))
         {
             info.BaseMultiplier = BASE_MULT;
+            if (_MaterialIntensityOverrides.TryGetValue(material.name, out var mult))
+            {
+                info.BaseMultiplier = mult;
+            }
             info.UpdateEmission(CFG.ObjectBloomScale.Value);
             _Lookup[material.GetInstanceID()] = info;
         }

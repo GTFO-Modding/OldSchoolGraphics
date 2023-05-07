@@ -22,6 +22,8 @@ internal static class CFG
 
     public static ConfigEntry<float> EnemyGlowScale { get; private set; }
     public static ConfigEntry<MeleeOverride> MeleeType { get; private set; }
+    public static ConfigEntry<float> FlashlightSwayFactor { get; private set; }
+    public static ConfigEntry<float> DustParticleFactor { get; private set; }
 
     public static float DEBUG_Value1 { get; private set; } = 1.0f;
     public static float DEBUG_Value2 { get; private set; } = 1.0f;
@@ -51,6 +53,8 @@ internal static class CFG
         MeleeType = _Config.Bind(USER_PREF, "Hammer Model", MeleeOverride.Default);
         ObjectBloomScale = _Config.Bind(USER_PREF, "Object Bloom Scale", 1.0f);
         EnemyGlowScale = _Config.Bind(USER_PREF, "Sleeper Glow Scale", 1.0f);
+        FlashlightSwayFactor = _Config.Bind(USER_PREF, "Flashlight Sway Movement", 0.35f, "(0.0 - 1.0) Lower = less movement from center");
+        DustParticleFactor = _Config.Bind(USER_PREF, "Dust Particle Factor", 0.7f, "Aka Dust Particle Size");
 
 #if DEBUG
         _DEBUG_Value1 = _Config.Bind(DEV, "Value1", 1.0f);
@@ -75,6 +79,11 @@ internal static class CFG
             try
             {
                 _Config.Reload();
+#if DEBUG
+                DEBUG_Value1 = _DEBUG_Value1.Value;
+                DEBUG_Value2 = _DEBUG_Value2.Value;
+                DEBUG_Value3 = _DEBUG_Value3.Value;
+#endif
                 if (PlayerManager.HasLocalPlayerAgent())
                 {
                     var player = PlayerManager.GetLocalPlayerAgent();

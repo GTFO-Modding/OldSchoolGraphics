@@ -11,13 +11,13 @@ namespace OldSchoolGraphics.Inject.Emissions;
 [HarmonyPatch(typeof(PlayerInventoryBase))]
 internal class Inject_Flashlight
 {
-    static float Mult => (1.15f / Math.Max(0.2f, CFG.ExposureScale.Value)) * OldSchoolSettings.EMISSION_MULT * 0.65f;
+    static float Mult => (1.15f / Math.Max(0.2f, CFG.ExposureScale.Value)) * OldSchoolSettings.EMISSION_MULT * 1.17f;
 
     [HarmonyPatch(nameof(PlayerInventoryBase.PrepareHelmetFlashlight))]
     [HarmonyPostfix]
     static void Post_HelmetLight(PlayerInventoryBase __instance)
     {
-        __instance.m_flashlight.intensity *= Mult;
+        __instance.m_flashlight.intensity *= Mult * 1.05f;
     }
 
     [HarmonyPatch(nameof(PlayerInventoryBase.OnItemEquippableFlashlightWielded))]

@@ -13,10 +13,23 @@ using Bloom = UnityEngine.Rendering.PostProcessing.Bloom;
 namespace OldSchoolGraphics.Controllers;
 internal static class OldSchoolSettings
 {
-    public const float EMISSION_MULT = 2.0f;
+    public const float EMISSION_MULT = 1.65f;
 
     public static void ApplyPPSettings(FPSCamera fpsCam)
     {
+        if (fpsCam.m_amplifyOcclusion != null)
+        {
+            fpsCam.m_amplifyOcclusion.Intensity = 0.0f;
+        }
+
+        if (fpsCam.AmbientParticles != null)
+        {
+            var mat = fpsCam.AmbientParticles.material;
+            var factor = CFG.DustParticleFactor.Value;
+            mat.SetFloat("_SizeMin", 0.002f * factor);
+            mat.SetFloat("_SizeMax", 0.003f * factor);
+        }
+
         fpsCam.SetBloomEnabled(true);
 
         var beProfile = fpsCam.postProcessing.m_ppBehavior.profile;
@@ -29,16 +42,16 @@ internal static class OldSchoolSettings
             if (TryCast(setting, out AutoExposure exposure))
             {
                 exposure.maxLuminance.value = 1.0f;
-                exposure.minLuminance.value = 1.25f;
-                exposure.keyValue.value = 2.02f * CFG.ExposureScale.Value;
+                exposure.minLuminance.value = 1.0f;
+                exposure.keyValue.value = 2.72f * CFG.ExposureScale.Value;
             }
             else if (TryCast(setting, out Bloom bloom))
             {
-                bloom.intensity.value = 3.63f * CFG.BloomScale.Value;
+                bloom.intensity.value = 3.44f * CFG.BloomScale.Value;
                 bloom.anamorphicRatio.value = -0.7f;
                 bloom.dirtIntensity.value = 0.1f;
                 bloom.diffusion.value = 0.05f;
-                bloom.threshold.value = 0.1f;
+                bloom.threshold.value = 0.5f;
                 bloom.softKnee.value = 0.65f;
                 bloom.clamp.value = 120.0f;
             }
