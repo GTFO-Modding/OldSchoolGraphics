@@ -10,33 +10,41 @@ namespace OldSchoolGraphics.Comps;
 internal class ScreenGrains : MonoBehaviour
 {
     private NoiseAndGrain _Noise;
+    private int _NoiseTextureIndex = 0;
 
-    public void Setup(Camera targetCamera)
+    [HideFromIl2Cpp]
+    public void Setup()
     {
+        var targetCamera = gameObject.GetComponent<Camera>();
         _Noise = targetCamera.gameObject.AddComponent<NoiseAndGrain>();
         _Noise.noiseShader = Shader.Find("Hidden/NoiseAndGrain");
         _Noise.dx11NoiseShader = Shader.Find("Hidden/NoiseAndGrainDX11");
         _Noise.noiseTexture = GetTexture();
         _Noise.tiling = Vector3.one * 128.0f;
-        _Noise.blackIntensity = 0.20f;
-        _Noise.whiteIntensity = 0.21f;
-        _Noise.generalIntensity = 0.22f;
+        _Noise.blackIntensity = 0.41f;
+        _Noise.whiteIntensity = 0.61f;
+        _Noise.generalIntensity = 0.4f;
         _Noise.monochrome = true;
+    }
+
+    [HideFromIl2Cpp]
+    public void UpdateIntensity(float intensity)
+    {
+        _Noise.intensityMultiplier = intensity;
     }
 
     void Update()
     {
-        _Noise.intensityMultiplier = CFG.NoiseScale.Value;
         _Noise.noiseTexture = GetTexture();
     }
 
-    int index = 0;
+    [HideFromIl2Cpp]
     Texture2D GetTexture()
     {
-        if (index > PE_BlueNoise.cNoiseLayers - 2)
+        if (_NoiseTextureIndex > PE_BlueNoise.cNoiseLayers - 2)
         {
-            index = 0;
+            _NoiseTextureIndex = 0;
         }
-        return PE_BlueNoise.Singleton.m_noiseTextures[index++];
+        return PE_BlueNoise.Singleton.m_noiseTextures[_NoiseTextureIndex++];
     }
 }

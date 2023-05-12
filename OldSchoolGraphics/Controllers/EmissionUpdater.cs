@@ -1,5 +1,6 @@
 ﻿using GTFO.API;
 using Il2CppInterop.Runtime;
+using OldSchoolGraphics.Configurations;
 using OldSchoolGraphics.Controllers.ShaderInfos;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ namespace OldSchoolGraphics.Controllers;
 internal static class EmissionUpdater
 {
     private static readonly Dictionary<int, EmissionInfo> _Lookup = new();
-    private const float BASE_MULT = 1.725f;
+    private const float BASE_MULT = 1.625f;
 
-    private static EmissiveShaderInfo[] _ESInfos = new EmissiveShaderInfo[]
+    private static readonly EmissiveShaderInfo[] _ESInfos = new EmissiveShaderInfo[]
     {
         new ESI_Standard(),
         new ESI_CMSWorldProp(),
@@ -26,11 +27,14 @@ internal static class EmissionUpdater
 
     private static readonly Dictionary<string, float> _MaterialIntensityOverrides = new()
     {
-        { "ApexLights", 0.9f },
-        { "terminal_display_screen", 1.1f }
+        { "ApexLights", 1.05f },
+        { "terminal_display_screen", 1.22f },
+        { "MWP", 1.05f },
+        { "prop_Datacenter_Databall_1", 1.15f },
+        { "DefoggerBig", 1.05f }
     };
 
-    public static void Initialize()
+    public static void Init()
     {
         EmissiveShaderInfo.Initialize();
         foreach (var esi in _ESInfos)
@@ -91,7 +95,7 @@ internal static class EmissionUpdater
             {
                 info.BaseMultiplier = mult;
             }
-            info.UpdateEmission(CFG.ObjectBloomScale.Value);
+            info.UpdateEmission(CFG.Emission.ObjectBloomScale);
             _Lookup[material.GetInstanceID()] = info;
         }
     }

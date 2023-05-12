@@ -15,8 +15,8 @@ internal class Inject_LocalPlayerAgent_Ambience
         __instance.m_ambientLightColor = ColorExt.Hex("#111146") * 1.35f;
         if (__instance.m_ambientLight != null)
         {
-            __instance.m_ambientLight.Range *= 1.085f;
-            __instance.m_ambientLight.Intensity *= 1.7f * OldSchoolSettings.EMISSION_MULT;
+            __instance.m_ambientLight.Range *= 1.31f;
+            __instance.m_ambientLight.Intensity *= 1.28f * OldSchoolSettings.EMISSION_MULT;
         }
     }
 }

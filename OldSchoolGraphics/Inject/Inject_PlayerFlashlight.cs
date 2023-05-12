@@ -1,4 +1,5 @@
 ﻿using OldSchoolGraphics.Comps;
+using OldSchoolGraphics.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,6 @@ internal class Inject_PlayerFlashlight
 
         var lightTarget = camera.transform.position + (camera.transform.forward * 6.0f);
         var lightTargetDir = (lightTarget - light.transform.position).normalized;
-        light.transform.rotation = Quaternion.LookRotation(Vector3.Lerp(lightTargetDir, light.transform.forward, CFG.FlashlightSwayFactor.Value));
+        light.transform.rotation = Quaternion.LookRotation(Vector3.Lerp(lightTargetDir, light.transform.forward, CFG.User.FlashlightSwayFactor));
     }
 }

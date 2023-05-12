@@ -1,4 +1,7 @@
 ﻿global using HarmonyLib;
+global using OldSchoolGraphics.Utils;
+global using Il2CppInterop.Runtime.Attributes;
+
 using AssetShards;
 using BepInEx;
 using BepInEx.Configuration;
@@ -10,6 +13,9 @@ using OldSchoolGraphics.Controllers;
 using System;
 using System.IO;
 using System.Linq;
+using UnityEngine;
+using OldSchoolGraphics.LegacySystem;
+using OldSchoolGraphics.Configurations;
 
 namespace OldSchoolGraphics;
 [BepInPlugin("OldSchoolGraphics.GUID", "OldSchoolGraphics", VersionInfo.Version)]
@@ -20,27 +26,16 @@ internal class EntryPoint : BasePlugin
 
     public override void Load()
     {
-        CFG.Initialize(new ConfigFile(Path.Combine(Paths.ConfigPath, "OldSchoolGraphics.cfg"), true));
+        CFG.Initialize("OldSchoolGraphics.cfg");
 
         ClassInjector.RegisterTypeInIl2Cpp<ScreenGrains>();
         ClassInjector.RegisterTypeInIl2Cpp<ScreenBlackAndWhite>();
+        ClassInjector.RegisterTypeInIl2Cpp<Comps.DebugBehaviour>();
 
         _Harmony = new Harmony($"{VersionInfo.RootNamespace}.Harmony");
         _Harmony.PatchAll();
         Logger.Info($"Plugin has loaded with {_Harmony.GetPatchedMethods().Count()} patches!");
         AssetAPI.OnStartupAssetsLoaded += AssetAPI_OnStartupAssetsLoaded;
-        //AssetAPI.OnAssetBundlesLoaded += AssetAPI_OnAssetBundlesLoaded;
-
-        
-    }
-
-    
-
-    private void AssetAPI_OnAssetBundlesLoaded()
-    {
-        //TODO: Add Gray PlayerLobbyBar Charactor
-        
-        //CM_Camera.Current.Camera.gameObject.AddComponent<ScreenBlackAndWhite>();
     }
 
     private void AssetAPI_OnStartupAssetsLoaded()
@@ -52,7 +47,16 @@ internal class EntryPoint : BasePlugin
             AssetShardManager.LoadShard(AssetShardManager.GetShardName(AssetBundleName.Gear_Melee_Handle, shard));
             AssetShardManager.LoadShard(AssetShardManager.GetShardName(AssetBundleName.Gear_Melee_Pommel, shard));
         }
-        EmissionUpdater.Initialize();
+        EmissionUpdater.Init();
+        LocalPlayer.Init();
+        CustomAssets.Init();
+        LegacyFog.Init();
+
+#if DEBUG
+        var mgr = new GameObject("mgr");
+        GameObject.DontDestroyOnLoad(mgr);
+        mgr.AddComponent<Comps.DebugBehaviour>();
+#endif
     }
 
     public override bool Unload()

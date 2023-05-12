@@ -1,5 +1,6 @@
 ﻿using GameData;
 using Gear;
+using OldSchoolGraphics.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ internal class Inject_GearPartSpawner
 {
     static void Prefix(ref GearPartGeneralData general)
     {
-        switch (CFG.MeleeType.Value)
+        switch (CFG.User.MeleeType)
         {
             case MeleeOverride.Gavel:
                 HammerInfo.Default.ReplaceTo(HammerInfo.Gavel, ref general);

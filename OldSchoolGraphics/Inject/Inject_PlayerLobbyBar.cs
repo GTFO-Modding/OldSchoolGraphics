@@ -24,7 +24,7 @@ internal class Inject_PlayerLobbyBar
 
     //[HarmonyPatch(nameof(CM_PlayerLobbyBar.StoreBackpackVanityItems))]
     //[HarmonyPostfix]
-    static void Post_VanityItemChanged(CM_PlayerLobbyBar __instance)
+    static void Post_VanityItemChanged()
     {
         ScreenBlackAndWhite.Instance.UpdateCommand();
     }
