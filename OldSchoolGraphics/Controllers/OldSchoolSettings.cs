@@ -28,7 +28,6 @@ internal static class OldSchoolSettings
 
     public static void ApplyPPSettings(FPSCamera fpsCam)
     {
-        UpdateGlobalShader();
         UpdateGraphicComponents(fpsCam);
         UpdatePostProcessing(fpsCam);
     }
@@ -53,13 +52,15 @@ internal static class OldSchoolSettings
                 volumeDepth = rTex.volumeDepth,
                 enableRandomWrite = true,
                 useMipMap = false,
-                wrapMode = rTex.wrapMode
+                wrapMode = rTex.wrapMode,
+                filterMode = rTex.filterMode
             };
             newRT.Create();
-            var compute = AssetAPI.GetLoadedAsset<ComputeShader>("Assets/OSG/LegacyFog.compute");
+            var compute = AssetAPI.GetLoadedAsset<ComputeShader>("Assets/Modding/OSG/LegacyFog.compute");
             var kernel = compute.FindKernel("CSMain");
             compute.SetVector("_Color", Color.white * CFG.DEBUG.V1);
             compute.SetTexture(kernel, "_FogVolume", newRT);
+            compute.SetTexture(kernel, "_FogNoise", lit.m_densityNoise);
             compute.Dispatch(kernel, 8, 8, 8);
             Shader.SetGlobalTexture(PreLitVolume._FogVolume, newRT);
         }
@@ -74,11 +75,6 @@ internal static class OldSchoolSettings
         }
     }
 
-    private static void UpdateGlobalShader()
-    {
-        Shader.SetGlobalFloat("_SampleNoiseAmount", CFG.Graphic.NoiseScale);
-    }
-
     private static void UpdatePostProcessing(FPSCamera fpsCam)
     {
         fpsCam.SetBloomEnabled(true);
@@ -87,19 +83,18 @@ internal static class OldSchoolSettings
         beProfile.bloom.enabled = true;
 
         var volProfile = fpsCam.postProcessing.m_ppVolume.profile;
-
         foreach (var setting in volProfile.settings)
         {
             if (TryCast(setting, out AutoExposure exposure))
             {
                 exposure.minLuminance.value = 1.0f;
                 exposure.maxLuminance.value = 1.0f;
-                exposure.keyValue.value = 9.45f * CFG.Graphic.ExposureScale;
+                exposure.keyValue.value = 11.3f * CFG.Graphic.ExposureScale;
             }
             else if (TryCast(setting, out Bloom bloom))
             {
-                bloom.intensity.value = 1.8f * CFG.Emission.BloomIntensity;
-                bloom.diffusion.value = 6.25f * CFG.Emission.BloomSpread;
+                bloom.intensity.value = 0.99f * CFG.Emission.BloomIntensity;
+                bloom.diffusion.value = CFG.Emission.BloomSpread;
                 bloom.anamorphicRatio.value = -0.25f;
                 bloom.dirtIntensity.value = 0.75f;
                 bloom.threshold.value = CFG.DEBUG.V2;
@@ -108,14 +103,12 @@ internal static class OldSchoolSettings
             }
             else if (TryCast(setting, out ColorGrading colorGrading))
             {
-                colorGrading.tonemapper.value = Tonemapper.ACES;
-                colorGrading.gradingMode.value = GradingMode.HighDefinitionRange;
+                colorGrading.gradingMode.value = GradingMode.LowDefinitionRange;
                 colorGrading.postExposure.value = 1.2f;
-                colorGrading.contrast.value = 3.0f * CFG.Graphic.ContrastScale;
-                colorGrading.temperature.value = -2.5f;
-                colorGrading.saturation.value = 8.0f;
-
-                //colorGrading.masterCurve.value.curve;
+                colorGrading.contrast.value = 0.6f * CFG.Graphic.ContrastScale;
+                colorGrading.temperature.value = CFG.Graphic.ColorTemperature;
+                colorGrading.saturation.value = CFG.Graphic.ColorSaturation;
+                colorGrading.tint.value = CFG.Graphic.ColorTint;
             }
         }
     }
