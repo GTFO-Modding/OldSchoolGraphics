@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace OldSchoolGraphics.Inject;
+namespace OldSchoolGraphics.Inject.Lobby;
 [HarmonyPatch(typeof(CM_PlayerLobbyBar))]
 internal class Inject_PlayerLobbyBar
 {

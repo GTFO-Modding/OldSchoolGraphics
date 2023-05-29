@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OldSchoolGraphics.Inject;
+namespace OldSchoolGraphics.Inject.Lobby;
 //[HarmonyPatch(typeof(CM_PageLoadoutLighting), nameof(CM_PageLoadoutLighting.LateUpdate))]
 internal class Inject_LobbyLight
 {

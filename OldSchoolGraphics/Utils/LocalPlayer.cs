@@ -13,6 +13,8 @@ internal static class LocalPlayer
     private static PlayerAgent _LocalPlayerAgent;
     private static FPSCamera _FPSCam;
 
+    public static int FPSSpotInstanceID { get; private set; } = -1;
+
     internal static void Init()
     {
         CoroutineDispatcher.StartCoroutine(Update());
@@ -24,6 +26,22 @@ internal static class LocalPlayer
         {
             _LocalPlayerAgent = PlayerManager.GetLocalPlayerAgent();
             _FPSCam = _LocalPlayerAgent != null ? _LocalPlayerAgent.FPSCamera : null;
+            FPSSpotInstanceID = -1;
+
+            //I know this is nesting, but it's for meme
+            if (_LocalPlayerAgent != null)
+            {
+                if (_LocalPlayerAgent.Inventory != null)
+                {
+                    if (_LocalPlayerAgent.Inventory.m_flashlightCLight != null)
+                    {
+                        if (_LocalPlayerAgent.Inventory.m_flashlightCLight.m_unityLight != null)
+                        {
+                            FPSSpotInstanceID = _LocalPlayerAgent.Inventory.m_flashlightCLight.m_unityLight.GetInstanceID();
+                        }
+                    }
+                }
+            }
             yield return null;
         }
     }

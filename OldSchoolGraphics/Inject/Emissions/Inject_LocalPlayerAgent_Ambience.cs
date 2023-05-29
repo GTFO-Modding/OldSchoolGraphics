@@ -1,4 +1,5 @@
-﻿using OldSchoolGraphics.Controllers;
+﻿using OldSchoolGraphics.Configurations;
+using OldSchoolGraphics.Controllers;
 using Player;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,11 @@ internal class Inject_LocalPlayerAgent_Ambience
 {
     static void Postfix(LocalPlayerAgent __instance)
     {
-        __instance.m_ambientLightColor = ColorExt.Hex("#111146") * 1.35f;
+        __instance.m_ambientLightColor = ColorExt.Hex("#6ee7ff") * 1.0f;
         if (__instance.m_ambientLight != null)
         {
-            __instance.m_ambientLight.Range *= 1.31f;
-            __instance.m_ambientLight.Intensity *= 1.28f * OldSchoolSettings.EMISSION_MULT;
+            __instance.m_ambientLight.Range *= 0.99f;
+            __instance.m_ambientLight.Intensity *= 2.02f * OldSchoolSettings.EMISSION_MULT * CFG.Emission.PlayerAmbientIntensity;
         }
     }
 }

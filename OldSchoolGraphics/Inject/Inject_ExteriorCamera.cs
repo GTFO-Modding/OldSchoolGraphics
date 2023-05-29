@@ -11,14 +11,14 @@ namespace OldSchoolGraphics.Inject;
 internal class Inject_ExteriorCamera
 {
     [HarmonyPostfix]
-    [HarmonyPatch(nameof(ExteriorCamera.OnEnable))]
+    [HarmonyPatch(nameof(ExteriorCamera.SetEnabled))]
     static void Post_OnEnable(ExteriorCamera __instance)
     {
         OldSchoolSettings.ApplyPPSettings(__instance.m_fpsCamera);
     }
 
     [HarmonyPostfix]
-    [HarmonyPatch(nameof(ExteriorCamera.OnDisable))]
+    [HarmonyPatch(nameof(ExteriorCamera.SetDisabled))]
     static void Post_OnDisable(ExteriorCamera __instance)
     {
         OldSchoolSettings.ApplyPPSettings(__instance.m_fpsCamera);

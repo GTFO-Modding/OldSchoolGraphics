@@ -12,7 +12,7 @@ internal class Inject_ScoutAnt
 {
     static void Postfix(ScoutAntenna __instance)
     {
-        __instance.m_colorDefault *= OldSchoolSettings.EMISSION_MULT * 1.1f;
-        __instance.m_colorDetection *= OldSchoolSettings.EMISSION_MULT * 1.1f;
+        __instance.m_colorDefault *= OldSchoolSettings.EMISSION_MULT * 1.65f;
+        __instance.m_colorDetection *= OldSchoolSettings.EMISSION_MULT * 1.65f;
     }
 }

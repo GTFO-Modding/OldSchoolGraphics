@@ -1,4 +1,5 @@
-﻿using GTFO.API;
+﻿using ExteriorRendering;
+using GTFO.API;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes;
 using OldSchoolGraphics.Comps;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.PostProcessing;
 using UnityStandardAssets.ImageEffects;
 using Bloom = UnityEngine.Rendering.PostProcessing.Bloom;
@@ -19,15 +21,25 @@ internal static class OldSchoolSettings
     public const float EMISSION_MULT = 1.65f;
 
     private static ScreenGrains _ScreenGrains;
+    private static FogPrelit _FogPrelit;
 
     public static void AddGraphicComponents(FPSCamera fpsCam)
     {
         _ScreenGrains = fpsCam.gameObject.AddComponent<ScreenGrains>();
         _ScreenGrains.Setup();
+
+        _FogPrelit = fpsCam.gameObject.AddComponent<FogPrelit>();
+        _FogPrelit.Setup();
     }
 
     public static void ApplyPPSettings(FPSCamera fpsCam)
     {
+        if (CFG.Graphic.ForceOffWetness)
+        {
+            Shader.SetGlobalFloat("_GlobalWetness", 0.0f);
+        }
+
+        Shader.SetGlobalFloat("_DitherAmount", CFG.Graphic.DitherScale);
         UpdateGraphicComponents(fpsCam);
         UpdatePostProcessing(fpsCam);
     }
@@ -41,28 +53,16 @@ internal static class OldSchoolSettings
 
         if (fpsCam.PrelitVolume != null)
         {
-            var lit = fpsCam.PrelitVolume;
-            lit.lightFogTonemap = 0.0f;
-            lit.fogLightAttenuation = 100.0f;
+            var prelit = fpsCam.PrelitVolume;
+            prelit.mode = PreLitVolume.AccumulationMode.MultiPass;
+            //prelit.FogPostBlur = 1;
+            prelit.DensityBoost = CFG.FogLit.FogBoost;
+            //prelit.DownsampleCount = 0;
+            //prelit.FogShadowSamples = 2;
+            //prelit.FogAACount = 2;
 
-            var rTex = Shader.GetGlobalTexture(PreLitVolume._FogVolume).Cast<RenderTexture>();
-            var newRT = new RenderTexture(rTex.width, rTex.height, rTex.depth)
-            {
-                dimension = rTex.dimension,
-                volumeDepth = rTex.volumeDepth,
-                enableRandomWrite = true,
-                useMipMap = false,
-                wrapMode = rTex.wrapMode,
-                filterMode = rTex.filterMode
-            };
-            newRT.Create();
-            var compute = AssetAPI.GetLoadedAsset<ComputeShader>("Assets/Modding/OSG/LegacyFog.compute");
-            var kernel = compute.FindKernel("CSMain");
-            compute.SetVector("_Color", Color.white * CFG.DEBUG.V1);
-            compute.SetTexture(kernel, "_FogVolume", newRT);
-            compute.SetTexture(kernel, "_FogNoise", lit.m_densityNoise);
-            compute.Dispatch(kernel, 8, 8, 8);
-            Shader.SetGlobalTexture(PreLitVolume._FogVolume, newRT);
+            //Indirect
+            prelit.IndirectIntensity = CFG.FogLit.Indirect;
         }
 
         if (fpsCam.AmbientParticles != null)
@@ -72,6 +72,18 @@ internal static class OldSchoolSettings
             var factor = CFG.Graphic.DustScale;
             mat.SetFloat("_SizeMin", 0.002f * factor);
             mat.SetFloat("_SizeMax", 0.003f * factor);
+        }
+
+        if (fpsCam.m_amplifyOcclusion != null)
+        {
+            var amp = fpsCam.m_amplifyOcclusion;
+            amp.BlurEnabled = false;
+        }
+        
+        var sss = fpsCam.gameObject.GetComponent<SubsurfaceScattering.SSS>();
+        if (sss != null)
+        {
+            sss.occlusionColoring = 0.0f;
         }
     }
 
@@ -96,19 +108,27 @@ internal static class OldSchoolSettings
                 bloom.intensity.value = 0.99f * CFG.Emission.BloomIntensity;
                 bloom.diffusion.value = CFG.Emission.BloomSpread;
                 bloom.anamorphicRatio.value = -0.25f;
-                bloom.dirtIntensity.value = 0.75f;
-                bloom.threshold.value = CFG.DEBUG.V2;
+                bloom.dirtIntensity.value = 0.9f;
+                bloom.threshold.value = CFG.Emission.BloomThreshold;
                 bloom.softKnee.value = 0.0f;
                 bloom.clamp.value = 600000.0f;
             }
             else if (TryCast(setting, out ColorGrading colorGrading))
             {
-                colorGrading.gradingMode.value = GradingMode.LowDefinitionRange;
+                colorGrading.gradingMode.value = GradingMode.HighDefinitionRange;
+                colorGrading.tonemapper.value = Tonemapper.ACES;
                 colorGrading.postExposure.value = 1.2f;
                 colorGrading.contrast.value = 0.6f * CFG.Graphic.ContrastScale;
-                colorGrading.temperature.value = CFG.Graphic.ColorTemperature;
                 colorGrading.saturation.value = CFG.Graphic.ColorSaturation;
-                colorGrading.tint.value = CFG.Graphic.ColorTint;
+                colorGrading.lift.value = new Vector4(1.0f, 1.0f, 1.0f, CFG.Graphic.LiftLevel);
+                colorGrading.gamma.value = new Vector4(1.0f, 1.0f, 1.0f, CFG.Graphic.GammaLevel);
+                colorGrading.gain.value = new Vector4(1.0f, 1.0f, 1.0f, CFG.Graphic.GainLevel);
+            }
+            else if (TryCast(setting, out Vignette vignette))
+            {
+                vignette.active = false;
+                vignette.enabled.value = false;
+                vignette.intensity.value = 0.0f;
             }
         }
     }

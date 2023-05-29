@@ -16,6 +16,7 @@ internal static class CFG
 {
     public static CFG_Graphics Graphic { get; private set; } = new();
     public static CFG_Emissions Emission { get; private set; } = new();
+    public static CFG_FogLit FogLit { get; private set; } = new();
     public static CFG_User User { get; private set; } = new();
     public static CFG_Debug DEBUG { get; private set; } = new();
 
@@ -28,6 +29,7 @@ internal static class CFG
 
         Graphic.Initialize(_Config);
         Emission.Initialize(_Config);
+        FogLit.Initialize(_Config);
         User.Initialize(_Config);
         DEBUG.Initialize(_Config);
 

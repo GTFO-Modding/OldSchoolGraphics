@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace OldSchoolGraphics.Configurations;
 internal class CFG_User
 {
-    private const string SECTION = "3. User Preferences / Minor";
+    private const string SECTION = "4. User Preferences / Minor";
 
     public MeleeOverride MeleeType => _MeleeType.Value;
     public float FlashlightSwayFactor => _FlashlightSwayFactor.Value;

@@ -14,7 +14,6 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using OldSchoolGraphics.LegacySystem;
 using OldSchoolGraphics.Configurations;
 
 namespace OldSchoolGraphics;
@@ -29,8 +28,9 @@ internal class EntryPoint : BasePlugin
         CFG.Initialize("OldSchoolGraphics.cfg");
 
         ClassInjector.RegisterTypeInIl2Cpp<ScreenGrains>();
+        ClassInjector.RegisterTypeInIl2Cpp<FogPrelit>();
         ClassInjector.RegisterTypeInIl2Cpp<ScreenBlackAndWhite>();
-        ClassInjector.RegisterTypeInIl2Cpp<Comps.DebugBehaviour>();
+        ClassInjector.RegisterTypeInIl2Cpp<DebugBehaviour>();
 
         _Harmony = new Harmony($"{VersionInfo.RootNamespace}.Harmony");
         _Harmony.PatchAll();
@@ -50,12 +50,11 @@ internal class EntryPoint : BasePlugin
         EmissionUpdater.Init();
         LocalPlayer.Init();
         CustomAssets.Init();
-        LegacyFog.Init();
 
 #if DEBUG
         var mgr = new GameObject("mgr");
-        GameObject.DontDestroyOnLoad(mgr);
-        mgr.AddComponent<Comps.DebugBehaviour>();
+        UnityEngine.Object.DontDestroyOnLoad(mgr);
+        mgr.AddComponent<DebugBehaviour>();
 #endif
     }
 
