@@ -21,16 +21,19 @@ internal class Inject_CL_Light
 
         var data = __instance.Data;
         var col = data.Irradiance;
-        var heighest = Mathf.Max(col.x, col.y, col.z);
-        var maxCap = CFG.FogLit.SpotColorMaxCap * DensityMult(data.Position);
-        var diff = heighest - CFG.FogLit.SpotColorMaxCap;
-        if (diff > 0)
-        {
-            col = (col / heighest) * maxCap;
-        }
+        var light = __instance.UnityLight;
+        var transform = __instance.transform;
 
+        RetoneColor(CFG.FogLit.SpotColorMaxCap, data.Position, ref col, out var rangeBoost);
         data.Irradiance = col * CFG.FogLit.SpotColorScale;
-        data.InvRangeSqr *= 1.0f / (diff + 1.25f);
+
+        var newVirtualRange = light.range + rangeBoost;
+        data.InvRangeSqr *= 1.0f / (newVirtualRange * newVirtualRange);
+
+        var pos = transform.position;
+        var rot = transform.rotation;
+        var scale = 2.0f * newVirtualRange * Vector3.one;
+        __instance.LightMatrix = Matrix4x4.TRS(pos, rot, scale);
         __instance.Data = data;
     }
 
@@ -40,27 +43,49 @@ internal class Inject_CL_Light
     {
         var data = __instance.Data;
         var col = data.Irradiance;
-        var heighest = Mathf.Max(col.x, col.y, col.z);
-        var maxCap = CFG.FogLit.PointColorMaxCap * DensityMult(data.Position);
-        var diff = heighest - maxCap;
-        if (diff > 0)
-        {
-            col = (col / heighest) * maxCap;
-        }
+        var light = __instance.UnityLight;
+        var transform = __instance.transform;
 
+        RetoneColor(CFG.FogLit.PointColorMaxCap, data.Position, ref col, out var rangeBoost);
         data.Irradiance = col * CFG.FogLit.PointColorScale;
-        data.InvRangeSqr *= 1.0f / (diff + 1.25f);
+
+        var newVirtualRange = light.range + rangeBoost;
+        data.InvRangeSqr *= 1.0f / (newVirtualRange * newVirtualRange);
+
+        var pos = transform.position;
+        var rot = transform.rotation;
+        var factor = newVirtualRange * Mathf.Tan(light.spotAngle * 0.5f * 0.0174532924f);
+        var scale = new Vector3(factor, factor, newVirtualRange);
+        __instance.LightMatrix = Matrix4x4.TRS(pos, rot, scale);
         __instance.Data = data;
     }
 
-    static float DensityMult(Vector3 pos)
+    static void RetoneColor(float maxCap, Vector3 pos, ref Vector3 lit, out float rangeBoost)
+    {
+        var brightness = lit.x * 0.212f + lit.y * 0.701f + lit.z * 0.087f;
+        var reMaxCap = maxCap + GetDensityLitBonus(pos);
+        var diff = brightness - reMaxCap;
+        if (diff > 0.0f)
+        {
+            lit = (lit / brightness) * reMaxCap;
+            rangeBoost = diff * CFG.FogLit.LitAdjustment_IntensityToRangeWeight;
+        }
+        else
+        {
+            rangeBoost = 0.0f;
+        }
+    }
+
+    static float GetDensityLitBonus(Vector3 pos)
     {
         var prelit = PreLitVolume.Current;
         if (prelit == null)
         {
-            return 1.0f;
+            return 0.0f;
         }
 
-        return Mathf.InverseLerp(0.05f, 0.0f, prelit.GetFogDensity(pos)) + 0.35f;
+        var density = prelit.GetFogDensity(pos);
+        var p = Mathf.InverseLerp(CFG.FogLit.LitAdjustment_MinDensity, CFG.FogLit.LitAdjustment_MaxDensity, density);
+        return p * CFG.FogLit.LitAdjustment_DensityBonusAmount;
     }
 }

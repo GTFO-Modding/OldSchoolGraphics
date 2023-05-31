@@ -35,15 +35,15 @@ internal sealed class CFG_Graphics
 
     internal void Initialize(ConfigFile cfg)
     {
-        _ExposureScale = cfg.Bind(SECTION, "Exposure Scale", 1.77f);
-        _NoiseScale = cfg.Bind(SECTION, "Noise Scale", 0.8f);
+        _ExposureScale = cfg.Bind(SECTION, "Exposure Scale", 1.95f);
+        _NoiseScale = cfg.Bind(SECTION, "Noise Scale", 0.85f);
         _DitherScale = cfg.Bind(SECTION, "Dither Scale", 0.0f);
-        _ContrastFactor = cfg.Bind(SECTION, "Contrast Factor", 10.0f);
+        _ContrastFactor = cfg.Bind(SECTION, "Contrast Factor", 5.0f);
         _DustScale = cfg.Bind(SECTION, "Dust Particle Scale", 0.6f);
-        _ColorSaturation = cfg.Bind(SECTION, "Color Saturation (Stronger Color)", -10.0f, "Value Range (-100.0 ~ 100.0)");
-        _LiftLevel = cfg.Bind(SECTION, "Lift Level (Dark Color)", -0.08f);
-        _GammaLevel = cfg.Bind(SECTION, "Gamma Level (Mid Color)", 0.3f);
-        _GainLevel = cfg.Bind(SECTION, "Gain Level (Bright Color)", -0.25f);
+        _ColorSaturation = cfg.Bind(SECTION, "Color Saturation (Stronger Color)", -6.5f, "Value Range (-100.0 ~ 100.0)");
+        _LiftLevel = cfg.Bind(SECTION, "Lift Level (Dark Color)", -0.06f);
+        _GammaLevel = cfg.Bind(SECTION, "Gamma Level (Mid Color)", -0.17f);
+        _GainLevel = cfg.Bind(SECTION, "Gain Level (Bright Color)", 0.4f);
         _ForceOffWetness = cfg.Bind(SECTION, "Force Off Wetness", true);
         //_UsingLegacyFog = cfg.Bind(GRAPHIC, "Use Legacy Fog", true);
     }

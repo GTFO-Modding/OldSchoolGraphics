@@ -63,6 +63,8 @@ internal static class OldSchoolSettings
 
             //Indirect
             prelit.IndirectIntensity = CFG.FogLit.Indirect;
+            prelit.ReflectionIntensity = CFG.FogLit.IndirectReflection;
+            prelit.IndirectFogOpacity = 1.0f;
         }
 
         if (fpsCam.AmbientParticles != null)
@@ -91,9 +93,6 @@ internal static class OldSchoolSettings
     {
         fpsCam.SetBloomEnabled(true);
 
-        var beProfile = fpsCam.postProcessing.m_ppBehavior.profile;
-        beProfile.bloom.enabled = true;
-
         var volProfile = fpsCam.postProcessing.m_ppVolume.profile;
         foreach (var setting in volProfile.settings)
         {
@@ -112,6 +111,7 @@ internal static class OldSchoolSettings
                 bloom.threshold.value = CFG.Emission.BloomThreshold;
                 bloom.softKnee.value = 0.0f;
                 bloom.clamp.value = 600000.0f;
+                bloom.dirtIntensity.value = CFG.Emission.BloomDirtIntensity;
             }
             else if (TryCast(setting, out ColorGrading colorGrading))
             {

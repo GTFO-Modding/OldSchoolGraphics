@@ -18,6 +18,15 @@ internal class Inject_EnemyGlow
     static void Pre_InterpolateGlow1(ref Color col)
     {
         col *= (OldSchoolSettings.EMISSION_MULT * 3.78f * CFG.Emission.EnemyGlowScale);
+
+        var brightness = col.r * 0.212f + col.g * 0.701f + col.b * 0.087f;
+
+        var cap = CFG.Emission.EnemyGlowCap;
+        if (brightness > cap)
+        {
+            var delta = brightness - cap;
+            col = (col / brightness) * cap;
+        }
     }
 
     [HarmonyPrefix]
@@ -27,5 +36,14 @@ internal class Inject_EnemyGlow
     static void Pre_InterpolateGlow2(ref Color col)
     {
         col *= (OldSchoolSettings.EMISSION_MULT * 3.78f * CFG.Emission.EnemyGlowScale);
+
+        var brightness = col.r * 0.212f + col.g * 0.701f + col.b * 0.087f;
+
+        var cap = CFG.Emission.EnemyGlowCap;
+        if (brightness > cap)
+        {
+            var delta = brightness - cap;
+            col = (col / brightness) * cap;
+        }
     }
 }
